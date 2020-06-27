@@ -18,10 +18,10 @@ Clone repo and startup virtual environment using venv. Use the command -->>
   source venv/bin/activate
 ```
 
-Next, install nesseary dependencies found in <code>requirements.txt</code>, and create an <code>.env</code> file with constants for listing PORT=7000 or any desired PORT. To use this API setup, navigate the directory so that it contains the <code>app.py</code> file. Once, this has been satisfied run -->>
+Next, install all necessary dependencies found in <code>requirements.txt</code>. You will also need to create an <code>.env</code> file with constants like variables PORT=7000 or alter 7000 to any desired PORT number, ADMIN=YOURUSERNAME, PASSWORD=YOURPASSWORD, and also inculde your PostgreSQL URI using variable POSTGRESQL_URI=YOURURI. To use this API setup, navigate the directory so that it contains the <code>app.py</code> file. Once, this has been satisfied run -->>
 
 ```python
   python app.py
 ```
 
-This command will start the server on localhost.
+This command will start the server on http://localhost:7000/.
