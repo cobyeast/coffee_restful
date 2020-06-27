@@ -12,13 +12,13 @@ Project to share information about local coffee shops using serialization with m
 5. security.py
 
 ## How To Run
-Clone repo and startup virtual environment using venv. Use the command >>
+Clone repo and startup virtual environment using venv. Use the command -->>
 
 ```bash
   source venv/bin/activate
 ```
 
-Next, install nesseary dependencies found in the requirements.txt file. Once, this has been satisfied run >>
+Next, install nesseary dependencies found in <mark>requirements.txt</mark>. To use this API setup, navigate the directory so that it contains the <mark>app.py</mark> file. Once, this has been satisfied run -->>
 
 ```python
   python app.py
