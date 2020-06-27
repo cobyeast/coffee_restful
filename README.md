@@ -18,7 +18,7 @@ Clone repo and startup virtual environment using venv. Use the command -->>
   source venv/bin/activate
 ```
 
-Next, install nesseary dependencies found in <mark>requirements.txt</mark>. To use this API setup, navigate the directory so that it contains the <mark>app.py</mark> file. Once, this has been satisfied run -->>
+Next, install nesseary dependencies found in <code>requirements.txt</code>, and create an <code>.env</code> file with constants for listing PORT=7000 or any desired PORT. To use this API setup, navigate the directory so that it contains the <code>app.py</code> file. Once, this has been satisfied run -->>
 
 ```python
   python app.py
