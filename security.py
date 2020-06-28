@@ -2,10 +2,16 @@ import os
 from dotenv import load_dotenv
 from werkzeug.security import safe_str_cmp
 from flask import jsonify
+from flask_jwt import JWT
 
-from models.users import User, UserSchema
+from app import app
+from models.users import *
 
 load_dotenv()
+
+# @desc       Auth Endpoint 
+# @route      /auth
+jwt = JWT(app, authenticate, idenity)
 
 users = [
   User(1, os.getenv('ADMIN'), os.getenv('PASSWORD'))
@@ -14,7 +20,7 @@ users = [
 username_map = {user.username: user for user in users}
 userid_map = {user.id: user for user in users}
 
-def autheticate(username, password):
+def authenticate(username, password):
   users = User.query.all()
   user_schema = UserSchema(many=True)
   res = user_schema.dumps(users).data
