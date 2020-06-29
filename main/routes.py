@@ -1,6 +1,10 @@
+from pprint import pprint
 from flask import request, jsonify
 from flask.views import MethodView
 from flask_jwt import jwt_required
+
+from models.items import Item as ItemModel, item_schema, items_schema
+from config import db
 
 items = []
 
@@ -9,23 +13,46 @@ class Item(MethodView):
   @Item class: acts, as the introductory route with 'GET' and 'POST' requests.
   """
   @staticmethod
-  def filter_by(items, name):
+  def filters_by(items, name):
     for x in items:
       if x['name'] == name: yield x
 
   # @jwt_required()
   def get(self, name):
-    item = next(self.filter_by(items, name), None)
-    return {'item': item}, 200 if item else 404
+    one_item = ItemModel.query.filter_by(name=name).first()
+    return item_schema.jsonify(one_item), 200
+
+    # item = next(self.filter_by(items, name), None)
+    # return {'item': item}, 200 if item else 404
   
   def post(self, name):
-    if next(self.filter_by(items, name), None):
-      return {'message': f'An item with name "{name}" already exists'}
+    # data = request.get_json(silent=True)
+    # req_item = dict(name=name, price=data['price'], description=data['description'])
+    # print(req_item)
 
-    data = request.get_json(silent=True)
-    item = {'name': name, 'price': data['price']}
-    items.append(item)
-    return item, 201 if item else 404
+    # res = item_schema.dump(req_item)
+    # pprint(res, indent=2)
+
+    # if not request.json or not 'name' in request.json:
+    #   return 400
+
+    price = request.json['price']
+    description = request.json['description']
+
+    new_item = ItemModel(name, price, description)
+
+    db.session.add(new_item)
+    db.session.commit()
+
+    return item_schema.jsonify(new_item), 201
+
+    # jsonify({'name': req_item.name, 'price': req_item.price, 'description': req_item.description}), 201
+    
+    # if next(self.filter_by(items, name), None):
+    #   return {'message': f'An item with name "{name}" already exists'}
+    # data = request.get_json(silent=True)
+    # item = {'name': name, 'price': data['price'],'description': data['description']}
+    # item, 201 if item else 404
   
   def delete(self, name):
     global items
@@ -37,9 +64,9 @@ class Item(MethodView):
   
   def put(self, name):
     data = request.get_json()
-    item = next(self.filter_by(items, name), None)
+    item = next(self.filters_by(items, name), None)
     if item is None:
-      item = {'name': name, 'price': data['price']}
+      item = {'name': name, 'price': data['price'],'description': data['description']}
       items.append(item)
     else:
       item.update(data)
@@ -51,4 +78,6 @@ class ItemList(MethodView):
   """
   # @jwt_required()
   def get(self):
-    return {'items': items}
+    all_items = ItemModel.query.all()
+    res = items_schema.dump(all_items)
+    return jsonify(res)

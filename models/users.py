@@ -1,8 +1,8 @@
 from datetime import datetime
-
-from config import *
+from config import db, ma
 
 class User(db.Model):
+  __tablename__= 'user'
   id = db.Column(db.Integer, primary_key=True)
   username = db.Column(db.String(25))
   password = db.Column(db.String(25))
@@ -22,6 +22,9 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
+
+
+
 
 # class User:
 #   def __init__(self, _id, username, password):
