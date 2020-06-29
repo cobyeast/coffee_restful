@@ -12,13 +12,31 @@ Project to share information about local coffee shops using serialization with m
 5. security.py
 
 ## How To Run
-Clone repo and startup virtual environment using venv. Use the command -->>
+1. Clone repo and startup virtual environment using venv. Use the command -->>
 
 ```bash
   source venv/bin/activate
 ```
 
-Next, install all necessary dependencies found in <code>requirements.txt</code>. You will also need to create an <code>.env</code> file with constants like variables PORT=7000 or alter 7000 to any desired PORT number, ADMIN=YOURUSERNAME, PASSWORD=YOURPASSWORD, and also inculde your PostgreSQL URI using variable POSTGRESQL_URI=YOURURI. To use this API setup, navigate the directory so that it contains the <code>app.py</code> file. Once, this has been satisfied run -->>
+2. Install all necessary dependencies found in <code>requirements.txt</code>. You will also need to create an <code>.env</code> file with constants like variables PORT=7000 or alter 7000 to any desired PORT number, ADMIN=YOURUSERNAME, PASSWORD=YOURPASSWORD, and also inculde your PostgreSQL URI using variable POSTGRESQL_URI=YOURURI.
+
+Note: Postgres URI is often broken down in the following format postgresql://[USERNAME]:[PASSWORD]@localhost/[DATABASE]. I am using coffeedb as my database, for this specific project.
+
+3. In order to create tables with Postgres run the bash command -->>
+
+```bash
+  python
+```
+
+In the python terminal run the following commands to create the item and user table.
+
+```python
+from config import db
+db.create_all()
+exit()
+```
+
+4. Navigate the directory so that it contains the <code>app.py</code> file. Once, this has been satisfied run -->>
 
 ```python
   python app.py
