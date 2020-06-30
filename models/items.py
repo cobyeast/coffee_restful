@@ -1,10 +1,10 @@
 from config import db, ma
 
-class Item(db.Model):
+class ItemModel(db.Model):
   __tablename__= 'item'
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(25))
-  price = db.Column(db.Integer)
+  price = db.Column(db.Float(precision=2))
   description = db.Column(db.String(150))
 
   def __init__(self, name, price, description):
@@ -17,7 +17,7 @@ class Item(db.Model):
 
 class ItemSchema(ma.SQLAlchemyAutoSchema):
   class Meta:
-    model = Item
+    model = ItemModel
     load_instance = True
 
 item_schema = ItemSchema()

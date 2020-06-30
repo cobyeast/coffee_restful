@@ -1,34 +1,34 @@
 import os
 from dotenv import load_dotenv
-from werkzeug.security import safe_str_cmp
 from flask import jsonify
-from flask_jwt import JWT
 
 from app import app
-from models.users import *
+from models.users import UserModel
+from config import bcrypt, db
 
 load_dotenv()
 
-# @desc       Auth Endpoint 
-# @route      /auth
-jwt = JWT(app, authenticate, idenity)
 
-users = [
-  User(1, os.getenv('ADMIN'), os.getenv('PASSWORD'))
+admins = [
+  UserModel(os.getenv('ADMIN'), UserModel.set_hash(os.getenv('PASSWORD')))
 ]
 
-username_map = {user.username: user for user in users}
-userid_map = {user.id: user for user in users}
+# Set Admins by Default; set_admin = True
+set_admin = True
+
+@app.after_request
+def default_admin():
+  if set_admin == True:
+    admin = next(one for one in admins)
+    print(admin)
+    db.session.add(admin)
+    db.session.commit()
 
 def authenticate(username, password):
-  users = User.query.all()
-  user_schema = UserSchema(many=True)
-  res = user_schema.dumps(users).data
-
-  user = username_map.get(username, None)
-  if user and safe_str_cmp(user.password, password):
-    return jsonify({'user': res})
+  user = UserModel.query.filter_by(username=username).first()
+  if user and bcrypt.check_password_hash(user.password, password):
+    return user
 
 def idenity(payload):
   user_id = payload['identity']
-  return userid_map.get(user_id, None)
+  return UserModel.query.get(user_id)
