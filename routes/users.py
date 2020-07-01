@@ -1,15 +1,14 @@
-from pprint import pprint
-from flask import request, jsonify
+from flask import request, jsonify, session
 from flask.views import MethodView
 from flask_jwt import jwt_required
+from werkzeug.wrappers import Response
 
 from models.users import UserModel, user_schema, users_schema
 from config import db, bcrypt
-from routes.utils import check_hash
 
 class User(MethodView):
   """
-  @desc: handles 'GET', 'POST', 'DELETE', and 'PUT' requests with an id as parameter.
+  @desc: handles 'GET', 'POST', 'DELETE', and 'PUT' requests with an id as url parameter.
   @route: /api/users/<id>
   """
 
@@ -38,68 +37,36 @@ class User(MethodView):
   
   def delete(self, _id):
 
-    data = request.get_json(silent=True)
-
-    username = data['username']
-    password = data['password']
-
     user = UserModel.query.get(_id)
 
     if not user:
       return 400
 
-    check = check_hash(username, password)
+    check = session.get('check')
 
-    if check[0] == True:
+    if check == True:
       db.session.delete(user)
       db.session.commit()
 
-    return {'msg': f'User {user.username} was successfully deleted.'}, 202 if check[0] else 401
-
-class UserRegister(MethodView):
-  """
-  @desc: handles 'POST' requests with no parameters.
-  @route: /api/users/register
-  """
-
-  def post(self):
-
-    data = request.get_json(silent=True)
-
-    username = data['username']
-    password = data['password']
-
-    if UserModel.find_by_username(username):
-      return {'msg': f'User {username} already exists.'}, 400
-
-    pw_hash = UserModel.set_hash(password)
-    user = UserModel(username, pw_hash)
-
-    db.session.add(user)
-    db.session.commit()
-
-    return {'msg': f'User {user.username} was successfully created.'}, 201
+    return {'msg': f'User {user.username} was successfully deleted.'}, 202
 
 class UserList(MethodView):
   """
-  @desc: handles 'GET' all requests with no parameters.
+  @desc: handles 'GET' all requests with url no parameters.
   @route: /api/users
   """
-  # @jwt_required()
+  @jwt_required()
   def get(self):
 
-    data = request.get_json(silent=True)
-
-    username = data['username']
-    password = data['password']
+    username = session.get('username')
 
     if not username:
       return 400
 
-    check = check_hash(username, password)
+    check = session.get('check')
     users = UserModel.query.all()
 
-    if check[0] == True:
+    if check == True:
       res = users_schema.dump(users)
       return jsonify(res), 200
     else:

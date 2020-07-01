@@ -20,5 +20,6 @@ class ItemSchema(ma.SQLAlchemyAutoSchema):
     model = ItemModel
     load_instance = True
 
+# Set schemas for query searches
 item_schema = ItemSchema()
 items_schema = ItemSchema(many=True)

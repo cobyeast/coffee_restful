@@ -12,6 +12,7 @@ class UserModel(db.Model):
     self.username = username
     self.password = password
   
+  # Hashes password upon registration
   @staticmethod
   def set_hash(password):
     pw_hash = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -21,11 +22,6 @@ class UserModel(db.Model):
   def find_by_username(cls, username):
     return cls.query.filter_by(username=username).first()
 
-  # def check_hash(cls, username, password):
-  #   user = cls.query.filter_by(username).first()
-  #   pw_hash = user.password
-  #   return bcrypt.check_password_hash(pw_hash, password)
-
   def __repr__(self):
     return f'{self.__class__.__name__}'
 
@@ -34,28 +30,6 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
       model = UserModel
       load_instance = True
 
+# Set schemas for query searches
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
-
-
-
-
-# class User:
-#   def __init__(self, _id, username, password):
-#     self._id = _id
-#     self.username = username
-#     self.password = password
-
-# class UserSchema(Schema):
-#   username = fields.String()
-#   password = fields.String()
-
-#   @post_load
-#   def create_users(self, data, **kwargs):
-#     return User(**data)
-
-
-# schema = UserSchema()
-# user = schema.load()
-
-# result = schema.dumps(user)

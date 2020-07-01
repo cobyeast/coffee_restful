@@ -9,17 +9,17 @@ from config import db
 
 class Item(MethodView):
   """
-  @desc: handles 'GET', 'POST' requests with name as parameter.
+  @desc: handles 'GET', 'POST' requests with name as url parameter.
   @route: /api/items/<name>
   """
 
-  # @jwt_required()
+  @jwt_required()
   def get(self, name):
 
     items = ItemModel.query.filter_by(name=name).all()
 
     if not items:
-      return 400
+      return 204
 
     return items_schema.jsonify(items), 200
 
@@ -28,7 +28,7 @@ class Item(MethodView):
     data = request.get_json(silent=True)
 
     if not data and not data['price']:
-      return 400
+      return 204
 
     item = ItemModel(name, data['price'], data['description'])
 
@@ -39,7 +39,7 @@ class Item(MethodView):
 
 class ItemEdit(MethodView):
   """
-  @desc: handles 'PUT', 'DELETE' requests with id as parameter.
+  @desc: handles 'PUT', 'DELETE' requests with id as url parameter.
   @route: /api/items/<id>
   """
 
@@ -66,13 +66,13 @@ class ItemEdit(MethodView):
 
     return {'msg': f'Item {item.name} was successfully updated.'}, 201
   
-  # @jwt_required()
+  @jwt_required()
   def delete(self, _id):
 
     item = ItemModel.query.get(_id)
 
     if not item:
-      return 400
+      return 204
 
     db.session.delete(item)
     db.session.commit()
@@ -81,16 +81,16 @@ class ItemEdit(MethodView):
 
 class ItemList(MethodView):
   """
-  @desc: handles 'GET' requests with no parameters.
+  @desc: handles 'GET' requests with no url parameters.
   @route: /api/items
   """
-  # @jwt_required()
+  @jwt_required()
   def get(self):
 
     items = ItemModel.query.all()
 
     if not items:
-      return 400
+      return 204
 
     res = items_schema.dump(items)
     return jsonify(res)
