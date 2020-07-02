@@ -4,21 +4,38 @@ Complete Flask Restful API with PostgreSQL DB.
 ## Overview
 Project to share information about local coffee shops using serialization with marshmallow to convert complex objects into server-side JSON data. Endpoints include /api for GET all requests, and /api:\<name\> for GET, POST, PUT, and DELETE requests. Server is secured using JWT authentication, inculding usernames, and hashed passwords with bcrypt.
   
-## Setup
+## Folder Setup
 1. main
 2. models
-3. auth
-4. app.py
-5. security.py
+3. routes
+4. auth
+5. app.py
+6. security.py
+7. middleware
+8. env
 
 ## How To Run
-1. Clone repo and startup virtual environment using venv. Use the command -->>
+1. Clone this repo and create a virtual environment using the command in the bash shell -->>
 
 ```bash
-  source venv/bin/activate
+  python3 -m venv env
 ```
 
-2. Install all necessary dependencies found in <code>requirements.txt</code>. You will also need to create an <code>.env</code> file with constants like variables PORT=7000 or alter 7000 to any desired PORT number, ADMIN=YOURUSERNAME, PASSWORD=YOURPASSWORD, and also inculde your PostgreSQL URI using variable POSTGRESQL_URI=YOURURI.
+Next you can run the virtual environment in bash using -->>
+
+```bash
+  source env/bin/activate
+```
+
+2. Install all necessary dependencies found in <code>requirements.txt</code>. You will also need to create an <code>.env</code> file with constants like variables PORT=8000 or alter 8000 to any desired PORT number, ADMIN=YOURUSERNAME, PASSWORD=YOURPASSWORD, and also inculde your PostgreSQL URI using variable POSTGRESQL_URI=YOURURI. At the end, it should look something like this -->>
+
+```env
+PORT=8000
+ADMIN=YOURUSERNAME
+SECRET_KEY=SECRETSTRING
+PASSWORD=YOURPASSWORD
+POSTGRESQL_URI=YOURURI
+```
 
 Note: Postgres URI is often broken down in the following format postgresql://[USERNAME]:[PASSWORD]@localhost/[DATABASE]. I am using coffeedb as my database, for this specific project.
 
@@ -42,4 +59,4 @@ exit()
   python app.py
 ```
 
-This command will start the server on http://localhost:7000/.
+Running this command will start the server on http://localhost:8000/.

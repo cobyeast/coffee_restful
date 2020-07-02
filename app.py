@@ -1,16 +1,18 @@
 import os
 from dotenv import load_dotenv
-from flask import Flask, Response, session
-from flask_jwt import JWT, jwt_required
+from flask import Flask, session
+from flask_jwt import JWT
 
-from middleware.middleware import Middleware
-
+# Optional middleware
+# from middleware.middleware import Middleware
 
 load_dotenv()
 
+
 app = Flask(__name__)
 
-app.wsgi_app = Middleware(app.wsgi_app)
+# Optional middleware function to set JWT token in header for authentication
+# app.wsgi_app = Middleware(app.wsgi_app)
 
 app.secret_key = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -22,14 +24,6 @@ def create_tables():
   with app.app_context():
     db.create_all()
 
-# @app.after_request
-# def add_header():
-#   if session.get('jwt'):
-#     jwt = str('JWT' + ' ' + session.get('jwt'))
-#     print(jwt)
-#     resp = Response("Foo bar baz")
-#     resp.headers['Authorization'] = jwt
-#     return resp
 
 # Avoid circual imports
 def load_routes():
@@ -38,7 +32,7 @@ def load_routes():
   from routes.users import User, UserList
   from routes.auth import Login, Register
 
-  jwt = JWT(app, authenticate, idenity) # set to /auth route by default
+  jwt = JWT(app, authenticate, idenity) # set to path /auth by default
 
   app.add_url_rule('/api/items/<string:name>', view_func=Item.as_view('item'))
   app.add_url_rule('/api/items/<int:_id>', view_func=ItemEdit.as_view('itemedit'))
@@ -50,7 +44,7 @@ def load_routes():
   app.add_url_rule('/api/auth/login', view_func=Login.as_view('login'))
   app.add_url_rule('/api/auth/register', view_func=Register.as_view('register'))
 
-# @jwt_required()
+
 @app.route('/api/auth/logout', methods=['GET', 'POST'])
 def logout():
   session.clear()

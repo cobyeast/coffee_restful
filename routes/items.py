@@ -1,19 +1,20 @@
 from pprint import pprint
-from flask import request, jsonify
+from flask import request, jsonify, session
 from flask.views import MethodView
-from flask_jwt import jwt_required
+# from flask_jwt import jwt_required
 
 from models.items import ItemModel, item_schema, items_schema
 from config import db
 
 
+# @jwt_required is an optional decorator added for additional security
 class Item(MethodView):
   """
   @desc: handles 'GET', 'POST' requests with name as url parameter.
   @route: /api/items/<name>
   """
 
-  @jwt_required()
+  # @jwt_required()
   def get(self, name):
 
     items = ItemModel.query.filter_by(name=name).all()
@@ -45,6 +46,12 @@ class ItemEdit(MethodView):
 
   def put(self, _id):
 
+    check = session.get('check')
+
+    # Check if user is loggedin
+    if not check:
+      return 401
+
     data = request.get_json(silent=True)
     
     name = data['name']
@@ -53,6 +60,7 @@ class ItemEdit(MethodView):
 
     item = ItemModel.query.get(_id)
 
+    # Creates new item if none exists
     if not item:
       new_item = ItemModel(name, price, description)
       db.session.add(new_item)
@@ -66,8 +74,13 @@ class ItemEdit(MethodView):
 
     return {'msg': f'Item {item.name} was successfully updated.'}, 201
   
-  @jwt_required()
+  # @jwt_required()
   def delete(self, _id):
+
+    check = session.get('check')
+
+    if not check:
+      return 401
 
     item = ItemModel.query.get(_id)
 
@@ -84,7 +97,8 @@ class ItemList(MethodView):
   @desc: handles 'GET' requests with no url parameters.
   @route: /api/items
   """
-  @jwt_required()
+  
+  # @jwt_required()
   def get(self):
 
     items = ItemModel.query.all()
