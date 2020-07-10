@@ -1,5 +1,5 @@
 # coffee_restful
-Complete Flask Restful API with PostgreSQL DB.
+CRUD Flask Restful API with PostgreSQL DB.
 
 ## Overview
 Project to share information about local coffee shops using serialization with marshmallow to convert complex objects into server-side JSON data. Server is secured using JWT authentication, inculding usernames, and hashed passwords with bcrypt.
