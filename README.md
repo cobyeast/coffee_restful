@@ -2,7 +2,11 @@
 Complete Flask Restful API with PostgreSQL DB.
 
 ## Overview
-Project to share information about local coffee shops using serialization with marshmallow to convert complex objects into server-side JSON data. Endpoints include /api for GET all requests, and /api:\<name\> for GET, POST, PUT, and DELETE requests. Server is secured using JWT authentication, inculding usernames, and hashed passwords with bcrypt.
+Project to share information about local coffee shops using serialization with marshmallow to convert complex objects into server-side JSON data. Server has CRUD functionality and is secured using JWT authentication, inculding usernames, and hashed passwords with bcrypt.
+
+Endpoints have three different params: items, users, and auth. Item paths include: /api/items for GET all requests, and /api/items:\<name\> for GET, POST, PUT, and DELETE requests. For users, paths include: /api/users for GET all requests, and /api/users:\<id\> for GET, PUT, and DELETE requests. For auth, paths include: /api/auth/register for POST requests, and lastly /api/auth/login for GET, and POST requests.
+
+Note: the path /auth has been reserved for serverside JWT authentication. 
   
 ## Folder Setup
 1. main
