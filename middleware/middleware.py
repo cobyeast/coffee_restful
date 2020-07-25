@@ -4,7 +4,6 @@ from werkzeug.wrappers import Request
 '''
 Middleware to set a 'Authorization': 'JWT Token' header in a production environment.
 In production, a uWSGI file must be made with the following included -->> WSGIPassAuthorization: on
-
 '''
 
 class Middleware:

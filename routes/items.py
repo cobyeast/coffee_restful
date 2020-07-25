@@ -1,20 +1,24 @@
+"""
+@desc: CRUD items routes for app.py module, with an additional route for 'GET' all requests.
+
+Author: C. Eastwood (07/24/2020)
+"""
+
+
 from pprint import pprint
 from flask import request, jsonify, session
 from flask.views import MethodView
-# from flask_jwt import jwt_required
 
 from models.items import ItemModel, item_schema, items_schema
 from config import db
 
 
-# @jwt_required is an optional decorator added for additional security
 class Item(MethodView):
   """
   @desc: handles 'GET', 'POST' requests with name as url parameter.
   @route: /api/items/<name>
   """
 
-  # @jwt_required()
   def get(self, name):
 
     items = ItemModel.query.filter_by(name=name).all()
@@ -22,21 +26,26 @@ class Item(MethodView):
     if not items:
       return 204
 
-    return items_schema.jsonify(items), 200
+    else:
+      return items_schema.jsonify(items), 200
 
   def post(self, name):
 
-    data = request.get_json(silent=True)
+    req = request.get_json(silent=True)
 
-    if not data and not data['price']:
+    # Destructure from request object
+    name, price, desc = (req[i] for i in req)
+
+    if not req:
       return 204
 
-    item = ItemModel(name, data['price'], data['description'])
+    else:
+      item = ItemModel(name, price, description)
 
-    db.session.add(item)
-    db.session.commit()
+      db.session.add(item)
+      db.session.commit()
 
-    return item_schema.jsonify(item), 201
+      return item_schema.jsonify(item), 201
 
 class ItemEdit(MethodView):
   """
@@ -46,40 +55,35 @@ class ItemEdit(MethodView):
 
   def put(self, _id):
 
-    check = session.get('check')
-
-    # Check if user is loggedin
-    if not check:
+    # Verify current user is authorized on this route
+    if not session.get('check'):
       return 401
 
-    data = request.get_json(silent=True)
-    
-    name = data['name']
-    price = data['price']
-    description = data['description']
+    else:
+      req = request.get_json(silent=True)
 
-    item = ItemModel.query.get(_id)
+      name, price, desc = (req[i] for i in req)
+      item = ItemModel.query.get(_id)
 
     # Creates new item if none exists
     if not item:
       new_item = ItemModel(name, price, description)
       db.session.add(new_item)
 
-    if item and name and price and description:
+    else:
+      # Create item dict
       item.name = name
       item.price = price
       item.description = description
-    
+
+    # Commit changes to postgres
     db.session.commit()
 
     return {'msg': f'Item {item.name} was successfully updated.'}, 201
   
-  # @jwt_required()
   def delete(self, _id):
 
-    check = session.get('check')
-
-    if not check:
+    if not session.get('check'):
       return 401
 
     item = ItemModel.query.get(_id)
@@ -98,7 +102,6 @@ class ItemList(MethodView):
   @route: /api/items
   """
   
-  # @jwt_required()
   def get(self):
 
     items = ItemModel.query.all()

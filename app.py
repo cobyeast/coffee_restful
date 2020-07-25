@@ -1,3 +1,13 @@
+"""
+Simple Flask CRUD Api
+v.1.0.1
+
+@desc: main app module, setups config, and initializes api endpoints
+
+Author: C. Eastwood (07/25/2020)
+"""
+
+
 import os
 from dotenv import load_dotenv
 from flask import Flask, session
@@ -34,6 +44,7 @@ def load_routes():
 
   jwt = JWT(app, authenticate, idenity) # set to path /auth by default
 
+  # Lists all api endpoints, with <:> values set as params
   app.add_url_rule('/api/items/<string:name>', view_func=Item.as_view('item'))
   app.add_url_rule('/api/items/<int:_id>', view_func=ItemEdit.as_view('itemedit'))
   app.add_url_rule('/api/items', view_func=ItemList.as_view('itemlist'))

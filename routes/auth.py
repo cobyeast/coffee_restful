@@ -1,3 +1,10 @@
+"""
+@desc: auth routes for app.py module, which provides register, and login functionality
+
+Author: C. Eastwood (07/24/2020)
+"""
+
+
 import os
 import requests
 
@@ -8,7 +15,7 @@ from dotenv import load_dotenv
 from app import app
 from config import db, bcrypt
 from models.users import UserModel
-from routes.utils import check_hash
+from routes.auth_helper import check_hash
 
 load_dotenv()
 
@@ -23,15 +30,14 @@ class Register(MethodView):
 
   def post(self):
 
-    data = request.get_json(silent=True)
+    req = request.get_json(silent=True)
+    username, password = (req[i] for i in req)
 
-    username = data['username']
-    password = data['password']
-
-    # Check if username has already been registered
+    # Register username if available
     if UserModel.find_by_username(username):
       return {'msg': f'User {username} already exists.'}, 400
 
+    # Hash provided password
     pw_hash = UserModel.set_hash(password)
     user = UserModel(username, pw_hash)
 
@@ -48,16 +54,14 @@ class Login(MethodView):
   
   def post(self):
 
-    data = request.get_json(silent=True)
+    req = request.get_json(silent=True)
+    username, password = (req[i] for i in req)
 
-    username = data['username']
-    password = data['password']
-
-    # Checks typed password matches hashed password
+    # Match to stored hashed password
     check = check_hash(username, password)
 
-    # Sends request to path /auth for JWT
-    if check[0] == True:
+    # Post request to path /auth for JWT
+    if check:
 
       URL = f'http://localhost:{PORT}/auth'
 
@@ -72,7 +76,7 @@ class Login(MethodView):
 
       res = requests.post(url=URL, json=PARAMS, headers=HEADERS).json()
 
-      # Sets session variables
+      # Assigns session variables
       session['username'] = username
       session['jwt'] = res['access_token']
       session['check'] = True
