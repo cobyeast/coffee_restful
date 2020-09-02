@@ -16,8 +16,9 @@ Note: the path /auth has been reserved for serverside JWT authentication.
 5. app.py
 6. app.sh
 7. security.py
-8. middleware
-9. env
+8. config.py
+9. middleware
+10. env
 
 ## How To Run
 1. Clone this repo and create a virtual environment using the bash commands in the terminal.
