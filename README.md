@@ -71,7 +71,7 @@ db.create_all()
 exit()
 ```
 
-4. Navigate to the main directory so that it contains the <code>app.sh</code> file. After run the following bash command to start the server on http://localhost:8000/. 
+5. Navigate to the main directory so that it contains the <code>app.sh</code> file. After run the following bash command to start the server on http://localhost:8000/. 
 
 ```bash
   bash app.py
