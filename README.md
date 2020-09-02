@@ -14,24 +14,37 @@ Note: the path /auth has been reserved for serverside JWT authentication.
 3. routes
 4. auth
 5. app.py
-6. security.py
-7. middleware
-8. env
+6  app.sh
+7. security.py
+8. middleware
+9. env
 
 ## How To Run
-1. Clone this repo and create a virtual environment using the command in the bash shell -->>
+1. Clone this repo and create a virtual environment using the bash commands in the terminal.
 
 ```bash
   python3 -m venv env
 ```
 
-Next you can run the virtual environment in bash using -->>
+Next you can run the virtual environment.
 
 ```bash
   source env/bin/activate
 ```
 
-2. Install all necessary dependencies found in <code>requirements.txt</code>. You will also need to create an <code>.env</code> file with constants like variables PORT=8000 or alter 8000 to any desired PORT number, ADMIN=YOURUSERNAME, PASSWORD=YOURPASSWORD, and also inculde your PostgreSQL URI using variable POSTGRESQL_URI=YOURURI. At the end, it should look something like this -->>
+2. Install all necessary dependencies found in <code>requirements.txt</code>. To do this run this bash command.
+
+```bash
+  pip install -r requirements.txt
+```
+
+On error run this command.
+
+```bash
+  pip3 install -r requirements.txt
+```
+
+3. Next create a <code>.env</code> file with constants like variables PORT=8000 or alter 8000 to any desired PORT number, ADMIN=YOURUSERNAME, PASSWORD=YOURPASSWORD, and also inculde your PostgreSQL URI using variable POSTGRESQL_URI=YOURURI. In the end, it should look something like.
 
 ```env
 PORT=8000
@@ -43,7 +56,7 @@ POSTGRESQL_URI=YOURURI
 
 Note: Postgres URI is often broken down in the following format postgresql://[USERNAME]:[PASSWORD]@localhost/[DATABASE]. I am using coffeedb as my database, for this specific project.
 
-3. In order to create tables with Postgres run the bash command -->>
+4. In order to create tables with Postgres run the following bash command.
 
 ```bash
   python
@@ -57,10 +70,8 @@ db.create_all()
 exit()
 ```
 
-4. Navigate the directory so that it contains the <code>app.py</code> file. Once, this has been satisfied run -->>
+4. Navigate to the main directory so that it contains the <code>app.sh</code> file. After run the following bash command to start the server on http://localhost:8000/. 
 
-```python
-  python app.py
+```bash
+  bash app.py
 ```
-
-Running this command will start the server on http://localhost:8000/.
