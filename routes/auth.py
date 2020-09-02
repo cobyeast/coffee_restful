@@ -4,7 +4,6 @@
 Author: C. Eastwood (07/24/2020)
 """
 
-
 import os
 import requests
 
@@ -23,62 +22,62 @@ PORT = os.getenv('PORT')
 
 
 class Register(MethodView):
-  """
-  @desc: handles 'POST' requests with url no parameters.
-  @route: /api/users/register
-  """
+    """
+    @desc: handles 'POST' requests with url no parameters.
+    @made: (07/25/2020), by Coby Eastwood
+    @route: /api/users/register
+    """
+    def post(self):
 
-  def post(self):
+        req = request.get_json(silent=True)
+        username, password = (req[i] for i in req)
 
-    req = request.get_json(silent=True)
-    username, password = (req[i] for i in req)
+        # Register username if available
 
-    # Register username if available
-    if UserModel.find_by_username(username):
-      return {'msg': f'User {username} already exists.'}, 400
+        if UserModel.find_by_username(username):
+            return {'msg': f'User {username} already exists.'}, 400
 
-    # Hash provided password
-    pw_hash = UserModel.set_hash(password)
-    user = UserModel(username, pw_hash)
+        # Hash provided password
 
-    db.session.add(user)
-    db.session.commit()
+        pw_hash = UserModel.set_hash(password)
+        user = UserModel(username, pw_hash)
 
-    return {'msg': f'User {user.username} was successfully created.'}, 201
+        db.session.add(user)
+        db.session.commit()
+
+        return {'msg': f'User {user.username} was successfully created.'}, 201
+
 
 class Login(MethodView):
-  """
-  @desc: handles 'POST' requests with url no parameters.
-  @route: /api/users/login
-  """
-  
-  def post(self):
+    """
+    @desc: handles 'POST' requests with url no parameters.
+    @route: /api/users/login
+    """
+    def post(self):
 
-    req = request.get_json(silent=True)
-    username, password = (req[i] for i in req)
+        req = request.get_json(silent=True)
+        username, password = (req[i] for i in req)
 
-    # Match to stored hashed password
-    check = check_hash(username, password)
+        # Match to stored hashed password
 
-    # Post request to path /auth for JWT
-    if check:
+        check = check_hash(username, password)
 
-      URL = f'http://localhost:{PORT}/auth'
+        # Post request to path /auth for JWT
 
-      HEADERS = {
-        'Content-Type': "application/json"
-      }
+        if check:
 
-      PARAMS = {
-        'username': username, 
-        'password': password
-      }
+            URL = f'http://localhost:{PORT}/auth'
 
-      res = requests.post(url=URL, json=PARAMS, headers=HEADERS).json()
+            HEADERS = {'Content-Type': "application/json"}
 
-      # Assigns session variables
-      session['username'] = username
-      session['jwt'] = res['access_token']
-      session['check'] = True
+            PARAMS = {'username': username, 'password': password}
 
-      return {'msg': f'Successfully login for {username}'}, 200
+            res = requests.post(url=URL, json=PARAMS, headers=HEADERS).json()
+
+            # Assigns session variables
+
+            session['username'] = username
+            session['jwt'] = res['access_token']
+            session['check'] = True
+
+            return {'msg': f'Successfully login for {username}'}, 200
