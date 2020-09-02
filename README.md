@@ -14,7 +14,7 @@ Note: the path /auth has been reserved for serverside JWT authentication.
 3. routes
 4. auth
 5. app.py
-6  app.sh
+6. app.sh
 7. security.py
 8. middleware
 9. env
