@@ -1,4 +1,4 @@
-# coffee_restful
+# flask_api
 Complete Flask Restful API with PostgreSQL DB.
 
 ## Overview
